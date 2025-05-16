@@ -2,6 +2,7 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+//Créer un nouvel utilisateur
 exports.register = async (req, res) => {
     try {
         const { name, email, password } = req.body;
@@ -18,6 +19,7 @@ exports.register = async (req, res) => {
   }
 };
 
+//Se connecter
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -35,4 +37,41 @@ exports.login = async (req, res) => {
     res.status(500).json({ message: 'Erreur serveur', error: err.message });
   }
 };
-    
+
+
+//Modifier un utilisateur 
+exports.updateUser = async (req, res) => {
+  try {
+    const { name, email } = req.body;
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.id,
+      { name, email },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "Utilisateur non trouvé." });
+    }
+
+    res.json({ message: "Utilisateur mis à jour", user: updatedUser });
+  } catch (err) {
+    res.status(500).json({ message: "Erreur serveur", error: err.message });
+  }
+};
+
+// Supprimer un utilisateur
+exports.deleteUser = async (req, res) => {
+  try {
+    const deletedUser = await User.findByIdAndDelete(req.params.id);
+
+    if (!deletedUser) {
+      return res.status(404).json({ message: "Utilisateur non trouvé." });
+    }
+
+    res.json({ message: "Utilisateur supprimé" });
+  } catch (err) {
+    res.status(500).json({ message: "Erreur serveur", error: err.message });
+  }
+};
+

@@ -11,4 +11,8 @@ router.get('/me', auth, (req, res) => {
   res.json({ message: `Bienvenue, utilisateur ${req.user.id}` });
 });
 
+router.put('/:id', auth, userController.updateUser);
+router.delete('/:id', auth, userController.deleteUser);
+
+
 module.exports = router;
