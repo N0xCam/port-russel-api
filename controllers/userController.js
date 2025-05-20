@@ -1,8 +1,10 @@
+/** Contrôleurs liés aux utilisateurs */
+
 const User = require('../models/User'); 
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-//Créer un nouvel utilisateur
+/**Créer un nouvel utilisateur */
 exports.register = async (req, res) => {
     try {
         const { name, email, password } = req.body;
@@ -19,7 +21,7 @@ exports.register = async (req, res) => {
   }
 };
 
-//Se connecter
+/** Connexion utilisateur + génération du token */
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -39,7 +41,7 @@ exports.login = async (req, res) => {
 };
 
 
-//Modifier un utilisateur 
+//Modifier un utilisateur */
 exports.updateUser = async (req, res) => {
   try {
     const { name, email } = req.body;
@@ -60,7 +62,7 @@ exports.updateUser = async (req, res) => {
   }
 };
 
-// Supprimer un utilisateur
+// Supprimer un utilisateur */
 exports.deleteUser = async (req, res) => {
   try {
     const deletedUser = await User.findByIdAndDelete(req.params.id);

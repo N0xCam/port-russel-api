@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Port Russell - Documentation API</title>
+  <link rel="icon" type="image/x-icon" href="favicon.png">
+</head>
+<body>
+  <h1>Documentation de l'API - Port Russell ⚓</h1>
+
+  <section>
+    <h2>Vue d'ensemble</h2>
+    <p>Cette API permet de gérer les utilisateurs, les catways (places au port) et les réservations associées. Toutes les routes (sauf inscription et connexion) nécessitent un token JWT dans l'en-tête.</p>
+  </section>
+
+  <section>
+    <h2>Authentification</h2>
+    <ul>
+      <li><strong>POST /api/users/register</strong> – Créer un nouvel utilisateur</li>
+      <li><strong>POST /api/users/login</strong> – Se connecter et recevoir un token JWT</li>
+      <li><strong>GET /api/users/me</strong> – Voir son profil (token requis)</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Catways</h2>
+    <ul>
+      <li><strong>GET /api/catways</strong> – Liste des catways (token requis)</li>
+      <li><strong>GET /api/catways/:id</strong> – Détail d’un catway (token requis)</li>
+      <li><strong>POST /api/catways</strong> – Créer un nouveau catway (token requis)</li>
+      <li><strong>PUT /api/catways/:id</strong> – Modifier un catway (token requis)</li>
+      <li><strong>DELETE /api/catways/:id</strong> – Supprimer un catway (token requis)</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Réservations</h2>
+    <ul>
+      <li><strong>GET /api/catways/:id/reservations</strong> – Voir toutes les réservations d’un catway (token requis)</li>
+      <li><strong>GET /api/catways/:id/reservations/:idReservation</strong> – Détail d’une réservation (token requis)</li>
+      <li><strong>POST /api/catways/:id/reservations</strong> – Créer une réservation (token requis)</li>
+      <li><strong>DELETE /api/catways/:id/reservations/:idReservation</strong> – Supprimer une réservation (token requis)</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Exemples de requêtes</h2>
+    <pre>
+POST /api/users/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "123456"
+}
+    </pre>
+
+    <pre>
+GET /api/catways
+Authorization: Bearer VOTRE_TOKEN
+    </pre>
+  </section>
+
+  <section>
+    <h2>Glossaire</h2>
+    <ul>
+      <li><strong>Catway :</strong> Place d'amarrage au port</li>
+      <li><strong>JWT :</strong> Token d’authentification</li>
+      <li><strong>Réservation :</strong> Occupation d’un catway par un bateau pendant une période</li>
+      <li><strong>Token :</strong> Clé d’accès générée à la connexion, à transmettre dans chaque requête sécurisée</li>
+      <li><strong>Dashboard :</strong> Interface utilisateur affichant les catways et leurs réservations</li>
+    </ul>
+  </section>
+
+  <p><a href="/dashboard.html">← Retour au tableau de bord</a></p>
+</body>
+</html>

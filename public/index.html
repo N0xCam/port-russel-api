@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UFT-8">
+    <title> Port Russel - Connexion </title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="icon" type="image/x-icon" href="favicon.png">
+</head>
+
+<body>
+    <h1> Bienvenue au Port Russel </h1>
+
+    <!-- Formulaire de connexion utilisateur -->
+   <form id="loginForm">
+  <label for="email">Email :</label>
+  <input type="email" name="email" required>
+  <br>
+  <label for="password">Mot de passe :</label>
+  <input type="password" name="password" required>
+  <br>
+  <button type="submit">Se connecter</button>
+</form>
+
+<script>
+  // Gestion de la connexion (envoi des identifiants au backend)
+document.getElementById("loginForm").addEventListener("submit", async function(event) {
+  event.preventDefault();
+
+  const email = event.target.email.value;
+  const password = event.target.password.value;
+
+  const response = await fetch("/api/users/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password })
+  });
+
+  const data = await response.json();
+  // Si la connexion est réussie -> stocker le token + rediriger
+  if (response.ok) {
+    // Enregistrer le token localement 
+    localStorage.setItem("token", data.token);
+    window.location.href = "/dashboard.html";
+  } else {
+    // Sinon -> message d'erreur
+    alert("Échec de la connexion : " + data.message);
+  }
+});
+</script>
+
+<!-- Consulter la documentation de l'API -->
+  <p><a href="doc.html">Voir la documentation de l'API</a></p>
+</body>
+
+</html>
+
