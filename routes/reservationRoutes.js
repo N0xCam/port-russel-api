@@ -1,10 +1,10 @@
 //* Routes concernant les reservations */
-const express = require('express');
+import express from 'express';
 
 // mergeParams permet d'accéder à l'ID du catway paren dans les routes imbriquées 
 const router = express.Router({ mergeParams: true });
-const reservationController = require('../controllers/reservationController');
-const auth = require('../middlewares/auth');
+import reservationController from '../controllers/reservationController.js';
+import auth from '../middlewares/auth.js';
 
 router.get('/', auth, reservationController.getReservationsByCatway); // Voir toutes les réservations liées à un catway
 router.get('/:idReservation', auth, reservationController.getReservationById); // Voir une réservations spécifique par son ID
@@ -13,4 +13,4 @@ router.delete('/:idReservation', auth, reservationController.deleteReservation);
 
 
 
-module.exports = router;
+export default router;

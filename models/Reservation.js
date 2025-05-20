@@ -1,6 +1,6 @@
-//* Modèle Mongoose concernant les réservations */
+//** Modèle Mongoose concernant les réservations **//
 
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const reservationSchema = new mongoose.Schema({
   catwayNumber: {
@@ -25,4 +25,6 @@ const reservationSchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model('Reservation', reservationSchema);
+const Reservation = mongoose.model('Reservation', reservationSchema);
+
+export default Reservation;

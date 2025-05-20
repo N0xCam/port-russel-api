@@ -1,6 +1,6 @@
-//* Modèle Mongoose concernant les catways */
+//** Modèle Mongoose concernant les catways **//
 
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const catwaySchema = new mongoose.Schema({
   catwayNumber: {
@@ -19,4 +19,6 @@ const catwaySchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model('Catway', catwaySchema);
+const Catway = mongoose.model('Catway', catwaySchema);
+
+export default Catway;
