@@ -203,10 +203,10 @@ it('POST /api/catways/:id/reservations doit créer une réservation', async func
 
   // 2. Préparer la réservation
   const reservation = {
-    clientName: 'Capitaine Sly',
-    boatName: 'Calypso des mers',
+    clientName: 'Capitaine Sola',
+    boatName: 'Le Sly Rider',
     checkIn: new Date().toISOString(),
-    checkOut: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString() 
+    checkOut: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString() // +3 jours
   };
 
   // 3. Créer la réservation
