@@ -1,5 +1,8 @@
+/** Contrôleurs liés aux réservations */
 const Reservation = require('../models/Reservation');
 
+
+/** Créer une nouvelle réservation pour un catway spécifique */
 exports.createReservation = async (req, res) => {
   try {
     const { clientName, boatName, checkIn, checkOut } = req.body;
@@ -19,6 +22,7 @@ exports.createReservation = async (req, res) => {
   }
 };
 
+/** Récupérer toutes les réservations liées à un Catway */
 exports.getReservationsByCatway = async (req, res) => {
   try {
     const catwayNumber = parseInt(req.params.id);
@@ -30,6 +34,7 @@ exports.getReservationsByCatway = async (req, res) => {
   }
 };
 
+/** Récupérer une réservation par son ID */
 exports.getReservationById = async (req, res) => {
   try {
     const reservation = await Reservation.findById(req.params.idReservation);
@@ -44,6 +49,7 @@ exports.getReservationById = async (req, res) => {
   }
 };
 
+/** Supprimer une réservation par son ID */
 exports.deleteReservation = async (req, res) => {
   try {
     const deleted = await Reservation.findByIdAndDelete(req.params.idReservation);
