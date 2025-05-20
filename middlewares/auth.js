@@ -1,10 +1,8 @@
-//* Middleware permettant l'authentification via un token JWT */
+//** Middleware permettant l'authentification via un token JWT **//
 
-const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
 
-
-//* Vérifier le token présent dans le header Authorization */
-module.exports = (req, res, next) => {
+const authMiddleware = (req, res, next) => {
   const token = req.header('Authorization')?.split(' ')[1];
 
   if (!token) {
@@ -13,9 +11,11 @@ module.exports = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; // On stocke l'utilisateur déchiffré dans la requête
-     next();
+    req.user = decoded; // Stocke les infos décryptées du token dans la requête
+    next();
   } catch (err) {
     res.status(400).json({ message: 'Token invalide.' });
   }
 };
+
+export default authMiddleware;

@@ -1,8 +1,9 @@
 //* Routes concernant les utilisateurs */
-const express = require('express');
+import express from 'express';
+import userController from '../controllers/userController.js';
+import auth from '../middlewares/auth.js';
+
 const router = express.Router();
-const userController = require('../controllers/userController');
-const auth = require('../middlewares/auth');
 
 // Inscription d'un nouvel utilisateur
 router.post('/register', userController.register);
@@ -22,4 +23,4 @@ router.put('/:id', auth, userController.updateUser);
 router.delete('/:id', auth, userController.deleteUser);
 
 
-module.exports = router;
+export default router;
