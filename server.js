@@ -1,13 +1,22 @@
-import express from 'express';
+import express from 'express'; 
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import catwayRoutes from './routes/catwayRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import reservationRoutes from './routes/reservationRoutes.js';
+import fs from 'fs';
 
 
+// Détection d'environnement
+const isLocal = process.env.NODE_ENV !== 'production';
 
-dotenv.config();
+// Chargement de l'env local si on est en local
+if (isLocal && fs.existsSync('.env.local')) {
+  dotenv.config({ path: '.env.local' });
+} else {
+  dotenv.config(); // Utilisé par Render
+}
+
 const app = express();
 app.use(express.json());
 
