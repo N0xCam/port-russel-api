@@ -2,6 +2,8 @@ Port Russel API
 
 API RESTful pour la gestion des catways et des réservations du port Russel.
 
+Lien permettant d'accéder à l'application hébergée : https://port-russel-api.onrender.com/
+
 1. Fonctionnalités : 
 
 - Gestion des catways : création, lecture, mise à jour, suppression.
@@ -32,7 +34,7 @@ L'application sera disponible sur http://localhost:3000.
 5. Identifiants :
 
 {
-  "email": "test@example.com",
+  "email": "captain@sly.com",
   "password": "123456"
 }
 
@@ -54,3 +56,13 @@ Disponible depuis l'application sur la page de connexion.
 8. Lancer les tests
 
 npm test
+
+Note importante
+
+Le fichier `.env` est volontairement inclus dans ce dépôt.  
+Cela ne correspond pas à une bonne pratique en production, mais a été délibérément conservé ici afin de :
+- garantir un fonctionnement immédiat en local sans configuration supplémentaire,
+- simplifier la phase de correction et de test.
+
+En situation réelle, les fichiers `.env` doivent être ignorés via `.gitignore`.
+
