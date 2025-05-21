@@ -33,14 +33,17 @@ const userController = {
   login: async (req, res) => {
     try {
       const { email, password } = req.body;
+       console.log('Tentative de connexion avec email:', email);
 
       const user = await User.findOne({ email });
       if (!user) {
+        console.log('Utilisateur non trouvé');
         return res.status(400).json({ message: 'Utilisateur non trouvé.' });
       }
 
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
+        console.log('Mot de passe correct ?', isMatch);
         return res.status(400).json({ message: 'Mot de passe incorrect.' });
       }
 
