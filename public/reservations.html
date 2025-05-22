@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Liste des réservations</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/x-icon" href="favicon.png">
+</head>
+<body>
+  <h1>Liste des réservations</h1>
+
+  <nav style="margin: 1em 0;">
+    <a href="catways.html">Voir tous les catways</a> |
+    <a href="reservations.html">Voir toutes les réservations</a> |
+    <a href="doc.html">Documentation API</a> |
+    <a href="#" onclick="logout()">Se déconnecter</a>
+  </nav>
+
+  <ul id="reservationList"></ul>
+
+  <script>
+    function logout() {
+      localStorage.removeItem("token");
+      window.location.href = "/";
+    }
+
+    const token = localStorage.getItem("token");
+    if (!token || token === "undefined" || token === "null") {
+      alert("Vous devez être connecté pour accéder à cette page.");
+      window.location.href = "/";
+    }
+
+    // Récupère les catways
+    fetch('/api/catways', {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    .then(res => {
+      if (!res.ok) throw new Error("Erreur lors de la récupération des catways.");
+      return res.json();
+    })
+    .then(catways => {
+      const ul = document.getElementById("reservationList");
+
+      catways.forEach(catway => {
+        fetch(`/api/catways/${catway.catwayNumber}/reservations`, {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        .then(res => {
+          if (!res.ok) throw new Error(`Erreur lors de la récupération des réservations pour le catway #${catway.catwayNumber}`);
+          return res.json();
+        })
+        .then(reservations => {
+          reservations.forEach(r => {
+            const li = document.createElement("li");
+            li.innerHTML = `
+              Bateau : ${r.boatName}, Client : ${r.clientName}, Catway #${r.catwayNumber}
+              <a href="reservation.html?id=${r._id}&catway=${r.catwayNumber}">Détails</a>
+            `;
+            ul.appendChild(li);
+          });
+        })
+        .catch(err => {
+          console.error(err.message);
+        });
+      });
+    })
+    .catch(err => {
+      document.getElementById("reservationList").innerHTML = `<li>${err.message}</li>`;
+    });
+  </script>
+</body>
+</html>
