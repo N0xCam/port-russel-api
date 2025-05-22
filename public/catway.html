@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Détail d'un catway</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/x-icon" href="favicon.png">
+</head>
+<body>
+  <h1>Détail du catway</h1>
+
+  <nav style="margin: 1em 0;">
+    <a href="catways.html">Voir tous les catways</a> |
+    <a href="reservations.html">Voir toutes les réservations</a> |
+    <a href="doc.html">Documentation API</a> |
+    <a href="/" onclick="logout()">Se déconnecter</a>
+  </nav>
+
+  <div id="catwayDetail"></div>
+
+  <script>
+    function logout() {
+      localStorage.removeItem("token");
+      window.location.href = "/";
+    }
+
+    const token = localStorage.getItem("token");
+    if (!token || token === "undefined" || token === "null") {
+      alert("Vous devez être connecté pour accéder à cette page.");
+      window.location.href = "/";
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+
+    fetch(`/api/catways/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    .then(res => res.json())
+    .then(catway => {
+      const div = document.getElementById("catwayDetail");
+      div.innerHTML = `
+        <p><strong>Numéro :</strong> ${catway.catwayNumber}</p>
+        <p><strong>Type :</strong> ${catway.type}</p>
+        <p><strong>État :</strong> ${catway.catwayState}</p>
+      `;
+    });
+  </script>
+</body>
+</html>

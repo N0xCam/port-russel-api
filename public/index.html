@@ -1,56 +1,60 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UFT-8">
-    <title> Port Russel - Connexion </title>
-    <link rel="stylesheet" href="/style.css">
-    <link rel="icon" type="image/x-icon" href="favicon.png">
+  <meta charset="UTF-8">
+  <title>Port Russel - Connexion</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="icon" type="image/x-icon" href="favicon.png">
 </head>
 
 <body>
-    <h1> Bienvenue au Port Russel </h1>
+  <h1>Bienvenue au Port Russel ⚓</h1>
 
-    <!-- Formulaire de connexion utilisateur -->
-   <form id="loginForm">
-  <label for="email">Email :</label>
-  <input type="email" name="email" required>
-  <br>
-  <label for="password">Mot de passe :</label>
-  <input type="password" name="password" required>
-  <br>
-  <button type="submit">Se connecter</button>
-</form>
+  <nav style="margin: 1em 0;">
+    <a href="doc.html">Documentation API</a>
+  </nav>
 
-<script>
-  // Gestion de la connexion (envoi des identifiants au backend)
-document.getElementById("loginForm").addEventListener("submit", async function(event) {
-  event.preventDefault();
+  <!-- Formulaire de connexion utilisateur -->
+  <form id="loginForm">
+    <label for="email">Email :</label>
+    <input type="email" name="email" required><br>
 
-  const email = event.target.email.value;
-  const password = event.target.password.value;
+    <label for="password">Mot de passe :</label>
+    <input type="password" name="password" required><br>
 
-  const response = await fetch("/api/users/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password })
-  });
+    <button type="submit">Se connecter</button>
+  </form>
 
-  const data = await response.json();
-  // Si la connexion est réussie -> stocker le token + rediriger
-  if (response.ok) {
-    // Enregistrer le token localement 
-    localStorage.setItem("token", data.token);
-    window.location.href = "/dashboard.html";
-  } else {
-    // Sinon -> message d'erreur
-    alert("Échec de la connexion : " + data.message);
-  }
-});
-</script>
+  <script>
+    // Supprime tout token stocké dès l'arrivée sur la page de connexion
+    localStorage.removeItem("token");
 
-<!-- Consulter la documentation de l'API -->
-  <p><a href="doc.html">Voir la documentation de l'API</a></p>
+    document.getElementById("loginForm").addEventListener("submit", async function(event) {
+      event.preventDefault();
+
+      const email = event.target.email.value;
+      const password = event.target.password.value;
+
+      try {
+        const response = await fetch("/api/users/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          localStorage.setItem("token", data.token);
+          window.location.href = "/dashboard.html";
+        } else {
+          alert("Échec de la connexion : " + (data.message || "Identifiants invalides."));
+        }
+      } catch (error) {
+        alert("Erreur de connexion au serveur.");
+        console.error(error);
+      }
+    });
+  </script>
 </body>
-
 </html>
-

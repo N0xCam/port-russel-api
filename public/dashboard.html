@@ -9,13 +9,52 @@
 <body>
   <h1>Tableau de bord - Port Russell ⚓</h1>
 
+  <p class="intro">
+    Bienvenue sur l'application <strong>Port Russel</strong> ⚓<br>
+    Cette application permet aux capitaines de gérer les places disponibles dans le port (catways) 
+    et les réservations associées. Vous pouvez consulter, ajouter, modifier ou supprimer les catways et réservations.
+  </p>
+
+  <nav style="margin: 1em 0;">
+    <a href="catways.html">Voir tous les catways</a> |
+    <a href="reservations.html">Voir toutes les réservations</a> |
+    <a href="doc.html">Documentation API</a> |
+    <a href="#" onclick="logout()">Se déconnecter</a>
+  </nav>
+
   <p>Bienvenue Capitaine Sly !</p>
 
+<section>
+  <h2>Gestion des utilisateurs</h2>
+
+  <h3>Créer un utilisateur</h3>
+  <form id="createUserForm">
+    <input type="text" name="name" placeholder="Nom" required>
+    <input type="email" name="email" placeholder="Email" required>
+    <input type="password" name="password" placeholder="Mot de passe" required>
+    <button type="submit">Créer</button>
+  </form>
+
+  <h3>Modifier un utilisateur</h3>
+  <form id="updateUserForm">
+    <input type="text" name="id" placeholder="ID de l'utilisateur" required>
+    <input type="text" name="name" placeholder="Nouveau nom">
+    <input type="email" name="email" placeholder="Nouvel email">
+    <input type="password" name="password" placeholder="Nouveau mot de passe">
+    <button type="submit">Modifier</button>
+  </form>
+
+  <h3>Supprimer un utilisateur</h3>
+  <form id="deleteUserForm">
+    <input type="text" name="id" placeholder="ID de l'utilisateur" required>
+    <button type="submit">Supprimer</button>
+  </form>
+</section>
+
+<section>
   <h2>Liste des catways</h2>
   <ul id="catwayList"></ul>
 
-
-  <!-- Formulaire pour ajouter un nouveau catway -->
   <h2>Ajouter un nouveau catway</h2>
   <form id="catwayForm">
     <label for="catwayNumber">Numéro :</label>
@@ -33,21 +72,102 @@
     <button type="submit">Créer</button>
   </form>
 
-  <!-- Redirection vers la page d'accueil pour se déconnecter -->
-  <p><a href="/">Se déconnecter</a></p>
+  <h3>Modifier une réservation</h3>
+<form id="updateReservationForm">
+  <input type="text" name="catway" placeholder="ID du catway" required>
+  <input type="text" name="id" placeholder="ID de la réservation" required>
+  <input type="text" name="clientName" placeholder="Nom du client">
+  <input type="text" name="boatName" placeholder="Nom du bateau">
+  <input type="datetime-local" name="checkIn">
+  <input type="datetime-local" name="checkOut">
+  <button type="submit">Modifier</button>
+</form>
 
+
+  <h3>Supprimer une réservation</h3>
+<form id="deleteReservationForm">
+  <input type="text" name="catwayId" placeholder="ID du catway" required>
+  <input type="text" name="reservationId" placeholder="ID de la réservation" required>
+  <button type="submit">Supprimer</button>
+</form>
+
+
+</section>
   <script>
-    document.addEventListener("DOMContentLoaded", async () => {
-      const token = localStorage.getItem("token");
+    function logout() {
+      localStorage.removeItem("token");
+      window.location.href = "/";
+    }
 
-       // Si aucun token n'est présent, on redirige vers la page d'accueil
-      if (!token) {
-        alert("Non autorisé. Vous allez être redirigé.");
-        window.location.href = "/";
-        return;
+    const token = localStorage.getItem("token");
+    if (!token || token === "undefined" || token === "null") {
+      alert("Vous devez être connecté pour accéder à cette page.");
+      window.location.href = "/";
+    }
+
+     document.getElementById("createUserForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const payload = {
+      name: form.name.value,
+      email: form.email.value,
+      password: form.password.value
+    };
+
+    const res = await fetch("/api/users/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const result = await res.json();
+    alert(res.ok ? "Utilisateur créé !" : "Erreur : " + result.message);
+    if (res.ok) form.reset();
+  });
+
+  document.getElementById("updateUserForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const payload = {};
+    if (form.name.value) payload.name = form.name.value;
+    if (form.email.value) payload.email = form.email.value;
+    if (form.password.value) payload.password = form.password.value;
+
+    const res = await fetch(`/api/users/${form.id.value}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const result = await res.json();
+    alert(res.ok ? "Utilisateur modifié !" : "Erreur : " + result.message);
+    if (res.ok) form.reset();
+  });
+
+  document.getElementById("deleteUserForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const form = e.target;
+
+    if (!confirm("Supprimer cet utilisateur ?")) return;
+
+    const res = await fetch(`/api/users/${form.id.value}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`
       }
+    });
 
-      // Récupération de tous les catways
+    const result = await res.json();
+    alert(res.ok ? "Utilisateur supprimé !" : "Erreur : " + result.message);
+    if (res.ok) form.reset();
+  });
+
+    document.addEventListener("DOMContentLoaded", async () => {
       const response = await fetch("/api/catways", {
         headers: {
           Authorization: `Bearer ${token}`
@@ -61,7 +181,6 @@
         const li = document.createElement("li");
         li.innerHTML = `<strong>Catway #${catway.catwayNumber}</strong> – ${catway.type} – ${catway.catwayState}<br>`;
 
-        // Formulaire pour modifier un catway existant
         const updateForm = document.createElement("form");
         updateForm.innerHTML = `
           <label>Modifier le type :
@@ -78,7 +197,6 @@
 
         updateForm.addEventListener("submit", async (e) => {
           e.preventDefault();
-
           const payload = {
             type: updateForm.type.value,
             catwayState: updateForm.catwayState.value
@@ -94,7 +212,6 @@
           });
 
           const updated = await resUpdate.json();
-
           if (resUpdate.ok) {
             alert("Catway modifié !");
             window.location.reload();
@@ -114,7 +231,6 @@
         deleteBtn.style.padding = "0.5em";
         deleteBtn.style.cursor = "pointer";
 
-        // Bouton pour supprimer le catway
         deleteBtn.addEventListener("click", async () => {
           if (confirm(`Supprimer le catway #${catway.catwayNumber} ?`)) {
             const resDelete = await fetch(`/api/catways/${catway._id}`, {
@@ -125,7 +241,6 @@
             });
 
             const result = await resDelete.json();
-
             if (resDelete.ok) {
               alert("Catway supprimé !");
               window.location.reload();
@@ -137,19 +252,16 @@
 
         li.appendChild(deleteBtn);
 
-        // Récupération des réservations liées à ce catway
         const res = await fetch(`/api/catways/${catway.catwayNumber}/reservations`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         const reservations = await res.json();
 
-         // Si des réservations existent → bouton d'affichage toggle
         if (reservations.length > 0) {
           const btn = document.createElement("button");
           btn.textContent = "Voir les réservations";
           btn.style.marginTop = "0.5em";
 
-          // div contenant la liste des réservations (affichage masqué par défaut)
           const resContainer = document.createElement("div");
           resContainer.style.display = "none";
           resContainer.style.marginTop = "0.5em";
@@ -158,17 +270,13 @@
           resContainer.style.borderRadius = "4px";
           resContainer.style.backgroundColor = "#f9f9f9";
 
-          if (reservations.length === 0) {
-            resContainer.innerHTML = "<em>Aucune réservation pour ce catway.</em>";
-          } else {
-            const ul = document.createElement("ul");
-            reservations.forEach(r => {
-              const liR = document.createElement("li");
-              liR.textContent = `${r.boatName} (${r.clientName}) – du ${new Date(r.checkIn).toLocaleDateString()} au ${new Date(r.checkOut).toLocaleDateString()}`;
-              ul.appendChild(liR);
-            });
-            resContainer.appendChild(ul);
-          }
+          const ul = document.createElement("ul");
+          reservations.forEach(r => {
+            const liR = document.createElement("li");
+            liR.textContent = `${r.boatName} (${r.clientName}) – du ${new Date(r.checkIn).toLocaleDateString()} au ${new Date(r.checkOut).toLocaleDateString()}`;
+            ul.appendChild(liR);
+          });
+          resContainer.appendChild(ul);
 
           btn.addEventListener("click", () => {
             resContainer.style.display = resContainer.style.display === "none" ? "block" : "none";
@@ -178,7 +286,6 @@
           li.appendChild(resContainer);
 
         } else {
-           // Si aucune réservation → formulaire pour en créer une
           const form = document.createElement("form");
           form.innerHTML = `
             <input type="text" name="clientName" placeholder="Nom du client" required>
@@ -187,6 +294,7 @@
             <input type="datetime-local" name="checkOut" required>
             <button type="submit">Réserver</button>
           `;
+
           form.addEventListener("submit", async (e) => {
             e.preventDefault();
             const formData = new FormData(form);
@@ -222,11 +330,9 @@
       }
     });
 
-    // Formulaire d'ajout de catway
     document.getElementById("catwayForm").addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      const token = localStorage.getItem("token");
       const form = e.target;
       const catwayNumber = form.catwayNumber.value;
       const type = form.type.value;
@@ -236,7 +342,7 @@
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+          Authorization: `Bearer ${token}`
         },
         body: JSON.stringify({ catwayNumber, type, catwayState })
       });
@@ -250,6 +356,53 @@
         alert("Erreur : " + data.message);
       }
     });
+
+    document.getElementById("deleteReservationForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const form = e.target;
+
+  if (!confirm("Supprimer cette réservation ?")) return;
+
+  const catwayId = form.catwayId.value;
+  const reservationId = form.reservationId.value;
+
+  const res = await fetch(`/api/catways/${catwayId}/reservations/${reservationId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+  const result = await res.json();
+  alert(res.ok ? "Réservation supprimée !" : "Erreur : " + result.message);
+  if (res.ok) form.reset();
+});
+
+document.getElementById("updateReservationForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const form = e.target;
+
+  const payload = {};
+  if (form.clientName.value) payload.clientName = form.clientName.value;
+  if (form.boatName.value) payload.boatName = form.boatName.value;
+  if (form.checkIn.value) payload.checkIn = new Date(form.checkIn.value).toISOString();
+  if (form.checkOut.value) payload.checkOut = new Date(form.checkOut.value).toISOString();
+
+  const res = await fetch(`/api/catways/${form.catway.value}/reservations/${form.id.value}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify(payload)
+  });
+
+  const result = await res.json();
+  alert(res.ok ? "Réservation modifiée !" : "Erreur : " + result.message);
+  if (res.ok) form.reset();
+});
+
+
   </script>
 </body>
 </html>
