@@ -53,25 +53,8 @@
 </section>
 
 <section>
-  <h2>Liste des catways</h2>
-  <ul id="catwayList"></ul>
 
-  <h2>Ajouter un nouveau catway</h2>
-  <form id="catwayForm">
-    <label for="catwayNumber">Numéro :</label>
-    <input type="number" name="catwayNumber" required><br>
-
-    <label for="type">Type :</label>
-    <select name="type">
-      <option value="short">Short</option>
-      <option value="long">Long</option>
-    </select><br>
-
-    <label for="catwayState">État :</label>
-    <input type="text" name="catwayState" required><br>
-
-    <button type="submit">Créer</button>
-  </form>
+  <h2>Gestion des réservations</h2>
 
   <h3>Modifier une réservation</h3>
 <form id="updateReservationForm">
@@ -91,6 +74,30 @@
   <input type="text" name="reservationId" placeholder="ID de la réservation" required>
   <button type="submit">Supprimer</button>
 </form>
+
+  <h2>Gestion des catways</h2>
+
+  <h3>Liste des catways</h3>
+  <ul id="catwayList"></ul>
+
+  <h2>Ajouter un nouveau catway</h2>
+  <form id="catwayForm">
+    <label for="catwayNumber">Numéro :</label>
+    <input type="number" name="catwayNumber" required><br>
+
+    <label for="type">Type :</label>
+    <select name="type">
+      <option value="short">Short</option>
+      <option value="long">Long</option>
+    </select><br>
+
+    <label for="catwayState">État :</label>
+    <input type="text" name="catwayState" required><br>
+
+    <button type="submit">Créer</button>
+  </form>
+
+  
 
 
 </section>
